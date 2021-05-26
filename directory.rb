@@ -20,9 +20,9 @@ def print_header
   puts "--------------"
 end
 
-def order(students)
-  ordered = students.sort_by { |student| student[:cohort] }
-  ordered
+def order(students, by)
+  ordered = students.sort_by { |student| student[by.to_sym] }
+  # ordered
 end
 
 def print(students)
@@ -65,5 +65,5 @@ end
 # nothing happens until we call the methods
 # students = input_students
 print_header
-print(order(students))
+print(order(students, "name"))
 print_footer(students)
