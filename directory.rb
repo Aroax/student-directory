@@ -1,6 +1,6 @@
 
 # let's put all students into an array
-students = [
+@students = [
   {name: "Dr. Hannibal Lecter", cohort: :may},
   {name: "Darth Vader", cohort: :november},
   {name: "Nurse Ratched", cohort: :may},
@@ -22,7 +22,13 @@ end
 
 def order(students, by)
   ordered = students.sort_by { |student| student[by.to_sym] }
-  # ordered
+  print(ordered)
+end
+
+def selective(students, by)
+  print(
+    students.select { |student| student[:name].include?(by)}
+  )
 end
 
 def print(students)
@@ -31,6 +37,26 @@ def print(students)
     puts "#{number}. #{student[:name]} (#{student[:cohort]} cohort, age #{student[:age]})"
     number += 1
   end
+end
+
+def operator
+  puts "(O)rdered, (U)nordered or (S)elective?"
+  choice = gets.chomp
+  case choice
+  when "O"
+    puts "by name, cohort or age?"
+    ordered = gets.chomp
+      order(@students, ordered)
+    when "U"
+      print(@students)
+    when "S"
+      puts "filter by names that begin with which letter?"
+      selective = gets.chomp
+      selective(@students, selective)
+
+  end
+
+
 end
 
 # finally, we pritn the total number of students
@@ -64,6 +90,7 @@ end
 
 # nothing happens until we call the methods
 # students = input_students
-print_header
-print(order(students, "name"))
-print_footer(students)
+# print_header
+# order(students, "name")
+# print_footer(students)
+operator
