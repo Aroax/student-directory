@@ -13,7 +13,72 @@
 #   {name: "Joffrey Baratheon", cohort: :june},
 #   {name: "Norman Bates", cohort: :november}
 # ]
-  @students = []
+@students = []
+
+def interactive_menu
+  loop do
+    print_menu
+    process(STDIN.gets.chomp)
+  end
+end
+
+def print_menu
+  puts "1. Input the students"
+  puts "2. Show the students"
+  puts "3. Save the list to students.csv"
+  puts "4. Load the student.csv list"
+  puts "9. Exit"
+end
+
+def process(selection)
+  case selection
+  when "1"
+    input_students
+  when "2"
+    show_students
+  when "3"
+    save_students
+  when "4"
+    load_students
+  when "9"
+    exit
+  else
+    puts "please enter a valid input"
+  end
+end
+
+def input_students
+  puts "Please enter the names of the students"
+  puts "To finish, just hit return twice"
+  # create an empty array
+  # get the first name
+  name = STDIN.gets.chomp
+  # while the name is not empty, repeat this code
+  while !name.empty? do
+    # add the student hash to the array
+    puts "age?"
+    age = gets.chomp
+    puts "cohort?"
+    cohort = STDIN.gets.chomp
+    @students << { name: name, cohort: cohort.to_s, age: age }
+    if @students.count == 1
+      puts "Now we have #{@students.count} student"
+    else
+      puts "Now we have #{@students.count} students"
+    end
+    # get another name from the user
+    name = STDIN.gets.chomp
+  end
+  # return the array of students
+  # students
+end
+
+def show_students
+  print_header
+  print_student_list(@students)
+  print_footer(@students)
+end
+
 # Print header text
 def print_header
   puts "The students of Villains Academy"
@@ -61,14 +126,27 @@ def save_students
 end
 
 # Load student list from CSV file
-def load_students
-  file = File.open("students.csv", "r")
+# Will take default students.csv but can be passed a file from ARGV command line
+def load_students(filename = "students.csv")
+  file = File.open(filename, "r")
   file.readlines.each do |line|
     name, cohort = line.chomp.split(',')
     @students << {name: name, cohort: cohort.to_sym}
   end
   file.close
   puts "Loaded file"
+end
+
+def try_load_students
+  filename = ARGV.first # first argument from command line
+  return if filename.nil? # get out of the method if no filename given
+  if File.exists?(filename) # if it exists, load file
+    load_students(filename)
+    puts "Loaded #{@students.count} students from #{filename}"
+  else # if it doesn't exist, exit
+    puts "Sorry, #{filename} not found"
+    exit
+  end
 end
 
 # Operator method handles operation logic - choose whether to return
@@ -101,74 +179,5 @@ def print_footer(names)
   end
 end
 
-def interactive_menu
-  loop do
-    print_menu
-    process(gets.chomp)
-  end
-end
-
-def print_menu
-  puts "1. Input the students"
-  puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the student.csv list"
-  puts "9. Exit"
-end
-
-def process(selection)
-  case selection
-  when "1"
-    input_students
-  when "2"
-    show_students
-  when "3"
-    save_students
-  when "4"
-    load_students
-  when "9"
-    exit
-  else
-    puts "please enter a valid input"
-  end
-end
-
-def show_students
-  print_header
-  print_student_list(@students)
-  print_footer(@students)
-end
-
-def input_students
-  puts "Please enter the names of the students"
-  puts "To finish, just hit return twice"
-  # create an empty array
-  # get the first name
-  name = gets.chomp
-  # while the name is not empty, repeat this code
-  while !name.empty? do
-    # add the student hash to the array
-    puts "age?"
-    age = gets.chomp
-    puts "cohort?"
-    cohort = gets.chomp
-    @students << { name: name, cohort: cohort.to_s, age: age }
-    if @students.count == 1
-      puts "Now we have #{@students.count} student"
-    else
-      puts "Now we have #{@students.count} students"
-    end
-    # get another name from the user
-    name = gets.chomp
-  end
-  # return the array of students
-  # students
-end
-
-
-# nothing happens until we call the methods
-
-# print_header
-# order(students, "name")
-#
+try_load_students
 interactive_menu
